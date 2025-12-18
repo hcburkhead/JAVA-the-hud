@@ -1,19 +1,32 @@
 #!/usr/bin/env python3
 """
 Java-the-hud GUI - Just Another Voice Assistant with GUI support
-Following ADA's architecture with multi-LLM support
-Dsigned by Clay Burkhead
+Using ADA's architecture from Naz Louis with multi-LLM support
+Designed by Clay Burkhead
 """
 
 import tkinter as tk
 from tkinter import scrolledtext, ttk, messagebox
 import threading
 from datetime import datetime
-from java-the-hud_main import (
-    JAVAAssistant, OpenAIProvider, AnthropicProvider, 
-    GeminiProvider, OllamaProvider
-)
+import importlib.util
+import sys
+from pathlib import Path
 import os
+
+# Import from the main module
+spec = importlib.util.spec_from_file_location(
+    "java_the_hud_main", 
+    Path(__file__).parent / "java-the-hud-main.py"
+)
+java_main = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(java_main)
+
+JAVAAssistant = java_main.JAVAAssistant
+OpenAIProvider = java_main.OpenAIProvider
+AnthropicProvider = java_main.AnthropicProvider
+GeminiProvider = java_main.GeminiProvider
+OllamaProvider = java_main.OllamaProvider
 
 class JAVAGUI:
     def __init__(self, root):
@@ -44,7 +57,7 @@ class JAVAGUI:
         
         subtitle = tk.Label(
             header_frame,
-            text="Just Another Voice Assistant",
+            text="Just Another Voice Assistant (the HUD)",
             font=('Helvetica', 11, 'italic'),
             bg='#0a0e27',
             fg='#888'
@@ -234,7 +247,7 @@ class JAVAGUI:
         # Footer
         footer = tk.Label(
             self.root,
-            text="Uses ADA's architecture from Naz Louis | Say 'exit' to stop",
+            text="Following ADA's architecture by Naz Louis | Say 'exit' to stop",
             font=('Helvetica', 8),
             bg='#0a0e27',
             fg='#555'
