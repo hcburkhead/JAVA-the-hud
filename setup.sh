@@ -3,8 +3,7 @@
 
 echo "=========================================="
 echo "JAVA - Just Another Voice Assistant"
-echo "Uses ADA's Architecture by Naz Louis"
-echo "Designed by Clay Burkhead"
+echo "Using ADA Architecture from Naz Louis"
 echo "=========================================="
 echo ""
 
@@ -44,7 +43,7 @@ elif [ "$OS" = "linux" ]; then
     elif command -v dnf &> /dev/null; then
         sudo dnf install -y portaudio-devel python3.11 ffmpeg espeak
     else
-        echo "Package manager not supported. Please install manually:"
+        echo "⚠️  Package manager not supported. Please install manually:"
         echo "   - portaudio19-dev"
         echo "   - python3.11"
         echo "   - ffmpeg"
@@ -76,17 +75,17 @@ pip install -r requirements.txt
 
 if [ $? -ne 0 ]; then
     echo ""
-    echo "Some dependencies failed. Trying alternative installation..."
+    echo "⚠️  Some dependencies failed. Trying alternative installation..."
     
     # Install core packages first
     pip install python-dotenv
     pip install RealtimeSTT==0.3.7 RealtimeTTS==0.4.3
     
     # Install LLM clients (these might fail individually, that's ok)
-    pip install openai anthropic google-generativeai ollama || echo "Some LLM clients failed (optional)"
+    pip install openai anthropic google-generativeai ollama || echo "⚠️  Some LLM clients failed (optional)"
     
     # Try ElevenLabs
-    pip install elevenlabs || echo "ElevenLabs failed (optional)"
+    pip install elevenlabs || echo "⚠️  ElevenLabs failed (optional)"
 fi
 
 # Create .env from template if it doesn't exist
@@ -98,7 +97,7 @@ if [ ! -f ".env" ]; then
 fi
 
 # Make scripts executable
-chmod +x java_main.py java_gui.py
+chmod +x java-the-hud-main.py java-the-hud-gui.py
 
 echo ""
 echo "=========================================="
@@ -115,8 +114,8 @@ echo "   curl -fsSL https://ollama.com/install.sh | sh"
 echo "   ollama pull llama3.2"
 echo ""
 echo "3. Run JAVA:"
-echo "   • Console mode: ./java_main.py"
-echo "   • GUI mode: ./java_gui.py"
+echo "   • Console mode: java-activate --console"
+echo "   • GUI mode: java-activate"
 echo ""
 echo "4. Choose your LLM provider:"
 echo "   • OpenAI (requires OPENAI_API_KEY)"
@@ -128,5 +127,5 @@ echo "For ElevenLabs TTS (optional but recommended):"
 echo "   • Get key from elevenlabs.io"
 echo "   • Add ELEVENLABS_API_KEY to .env"
 echo ""
-echo "Architecture inspired by ADA: https://github.com/Nlouis38/ada"
+echo "Architecture reference: https://github.com/Nlouis38/ada"
 echo ""
