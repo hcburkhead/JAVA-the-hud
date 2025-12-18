@@ -1,0 +1,238 @@
+#!/usr/bin/env python3
+"""
+java-add - Manage Java-the-hud application allowlist
+Designed by Clay Burkhead
+"""
+
+import os
+import sys
+import json
+from pathlib import Path
+
+# Get the installation directory
+INSTALL_DIR = Path(__file__).parent.absolute()
+ALLOWLIST_FILE = INSTALL_DIR / ".java_allowlist.json"
+
+def load_allowlist():
+    """Load the current allowlist"""
+    if ALLOWLIST_FILE.exists():
+        with open(ALLOWLIST_FILE, 'r') as f:
+            return json.load(f)
+    return {"applications": [], "websites": []}
+
+def save_allowlist(allowlist):
+    """Save the allowlist to file"""
+    with open(ALLOWLIST_FILE, 'w') as f:
+        json.dump(allowlist, f, indent=2)
+
+def list_allowed():
+    """List all allowed applications and websites"""
+    allowlist = load_allowlist()
+    
+    print("\n📱 Allowed Applications:")
+    if allowlist["applications"]:
+        for i, app in enumerate(allowlist["applications"], 1):
+            print(f"  {i}. {app}")
+    else:
+        print("  (none)")
+    
+    print("\n🌐 Allowed Websites:")
+    if allowlist["websites"]:
+        for i, site in enumerate(allowlist["websites"], 1):
+            print(f"  {i}. {site}")
+    else:
+        print("  (none)")
+    print()
+
+def add_application(name):
+    """Add an application to the allowlist"""
+    allowlist = load_allowlist()
+    
+    if name in allowlist["applications"]:
+        print(f"'{name}' is already in the allowlist")
+        return
+    
+    allowlist["applications"].append(name)
+    save_allowlist(allowlist)
+    print(f"✓ Added application: {name}")
+
+def add_website(url):
+    """Add a website to the allowlist"""
+    allowlist = load_allowlist()
+    
+    # Normalize URL
+    if not url.startswith(('http://', 'https://')):
+        url = f"https://{url}"
+    
+    if url in allowlist["websites"]:
+        print(f"'{url}' is already in the allowlist")
+        return
+    
+    allowlist["websites"].append(url)
+    save_allowlist(allowlist)
+    print(f"✓ Added website: {url}")
+
+def remove_item(item_type, index):
+    """Remove an item from the allowlist"""
+    allowlist = load_allowlist()
+    
+    try:
+        index = int(index) - 1
+        if item_type == "app":
+            removed = allowlist["applications"].pop(index)
+            print(f"✓ Removed application: {removed}")
+        elif item_type == "site":
+            removed = allowlist["websites"].pop(index)
+            print(f"✓ Removed website: {removed}")
+        save_allowlist(allowlist)
+    except (IndexError, ValueError):
+        print(f"Invalid index: {index + 1}")
+
+def clear_all():
+    """Clear the entire allowlist"""
+    print(" This will remove ALL applications and websites from the allowlist.")
+    confirm = input("Are you sure? (yes/no): ").lower()
+    
+    if confirm == "yes":
+        save_allowlist({"applications": [], "websites": []})
+        print("✓ Allowlist cleared")
+    else:
+        print("Cancelled")
+
+def interactive_mode():
+    """Interactive menu for managing allowlist"""
+    while True:
+        print("\n" + "=" * 60)
+        print("Java-the-hud - Application Allowlist Manager")
+        print("=" * 60)
+        list_allowed()
+        
+        print("Commands:")
+        print("  1. Add application")
+        print("  2. Add website")
+        print("  3. Remove application")
+        print("  4. Remove website")
+        print("  5. Clear all")
+        print("  6. Exit")
+        print()
+        
+        choice = input("Select option (1-6): ").strip()
+        
+        if choice == "1":
+            name = input("Enter application name: ").strip()
+            if name:
+                add_application(name)
+        
+        elif choice == "2":
+            url = input("Enter website URL: ").strip()
+            if url:
+                add_website(url)
+        
+        elif choice == "3":
+            list_allowed()
+            index = input("Enter application number to remove: ").strip()
+            if index:
+                remove_item("app", index)
+        
+        elif choice == "4":
+            list_allowed()
+            index = input("Enter website number to remove: ").strip()
+            if index:
+                remove_item("site", index)
+        
+        elif choice == "5":
+            clear_all()
+        
+        elif choice == "6":
+            print("\n Goodbye!")
+            break
+        
+        else:
+            print(" Invalid option")
+
+def print_help():
+    """Print help message"""
+    print("""
+Usage: java-add [OPTIONS] [NAME]
+
+Manage the allowlist of applications and websites that Java-the-hud
+can open via voice commands.
+
+Options:
+  --app, -a NAME       Add an application to allowlist
+  --site, -s URL       Add a website to allowlist
+  --remove-app INDEX   Remove application by index
+  --remove-site INDEX  Remove website by index
+  --list, -l           List all allowed items
+  --clear              Clear entire allowlist
+  --interactive, -i    Interactive mode (default)
+  --help, -h           Show this help message
+
+Examples:
+  java-add --app "Spotify"              # Allow opening Spotify
+  java-add --site "github.com"          # Allow opening GitHub
+  java-add --list                       # Show current allowlist
+  java-add --remove-app 2               # Remove 2nd application
+  java-add                              # Interactive mode
+
+Notes:
+  - Application names are case-sensitive
+  - Websites can be added with or without http://
+  - Use quotes for names with spaces
+  - The allowlist is stored in: {ALLOWLIST_FILE}
+""".format(ALLOWLIST_FILE=ALLOWLIST_FILE))
+
+def main():
+    """Main entry point"""
+    if len(sys.argv) == 1:
+        # No arguments - interactive mode
+        interactive_mode()
+        return
+    
+    command = sys.argv[1]
+    
+    if command in ["--help", "-h"]:
+        print_help()
+    
+    elif command in ["--list", "-l"]:
+        list_allowed()
+    
+    elif command in ["--app", "-a"]:
+        if len(sys.argv) < 3:
+            print("Please provide an application name")
+            print("Usage: java-add --app NAME")
+            sys.exit(1)
+        add_application(sys.argv[2])
+    
+    elif command in ["--site", "-s"]:
+        if len(sys.argv) < 3:
+            print("Please provide a website URL")
+            print("Usage: java-add --site URL")
+            sys.exit(1)
+        add_website(sys.argv[2])
+    
+    elif command == "--remove-app":
+        if len(sys.argv) < 3:
+            print("Please provide an index")
+            sys.exit(1)
+        remove_item("app", sys.argv[2])
+    
+    elif command == "--remove-site":
+        if len(sys.argv) < 3:
+            print("Please provide an index")
+            sys.exit(1)
+        remove_item("site", sys.argv[2])
+    
+    elif command == "--clear":
+        clear_all()
+    
+    elif command in ["--interactive", "-i"]:
+        interactive_mode()
+    
+    else:
+        print(f"Unknown command: {command}")
+        print("Run 'java-add --help' for usage information")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
