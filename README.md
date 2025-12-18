@@ -6,4 +6,4 @@ Use:
 
 command line: Download the repo and run it in Python in it's own virtual environment (python venv -name-). It should detect your microphone after initializing run [java-activate] 
 
-The GUI is a plasmoid accessed in KDE (This project requires Linux -I use Arch btw...) which will run after you have started the backend ^SEE ABOVE^
+The GUI is a plasmoid accessed in KDE (This project requires Linux -"I use Arch btw"- ...but can also be ran on MacOS) which will run after you have started the backend ^SEE ABOVE^
