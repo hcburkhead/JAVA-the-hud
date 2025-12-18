@@ -1,0 +1,86 @@
+#!/usr/bin/env python3
+"""
+java-activate - Launch Java-the-hud voice assistant
+"""
+
+import os
+import sys
+import subprocess
+from pathlib import Path
+
+# Get the installation directory
+INSTALL_DIR = Path(__file__).parent.absolute()
+VENV_DIR = INSTALL_DIR / "venv"
+GUI_SCRIPT = INSTALL_DIR / "java-the-hud-gui.py"
+CONSOLE_SCRIPT = INSTALL_DIR / "java-the-hud-main.py"
+
+def check_venv():
+    """Check if virtual environment exists"""
+    if not VENV_DIR.exists():
+        print("Virtual environment not found!")
+        print("Please run setup first:")
+        print(f"  cd {INSTALL_DIR}")
+        print("  ./setup.sh")
+        sys.exit(1)
+
+def get_python():
+    """Get the Python executable from venv"""
+    if sys.platform == "win32":
+        return str(VENV_DIR / "Scripts" / "python.exe")
+    else:
+        return str(VENV_DIR / "bin" / "python")
+
+def main():
+    """Main launcher"""
+    print("=" * 60)
+    print("Java-the-hud - Voice Assistant")
+    print("=" * 60)
+    print()
+    
+    # Check installation
+    check_venv()
+    
+    if not GUI_SCRIPT.exists():
+        print(f"❌ GUI script not found: {GUI_SCRIPT}")
+        sys.exit(1)
+    
+    # Parse arguments
+    mode = "gui"
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ["--console", "-c"]:
+            mode = "console"
+        elif sys.argv[1] in ["--help", "-h"]:
+            print("Usage: java-activate [OPTIONS]")
+            print()
+            print("Options:")
+            print("  --gui, -g       Launch GUI mode (default)")
+            print("  --console, -c   Launch console mode")
+            print("  --help, -h      Show this help message")
+            print()
+            print("Examples:")
+            print("  java-activate              # Launch GUI")
+            print("  java-activate --console    # Launch console mode")
+            return
+    
+    # Launch appropriate mode
+    python = get_python()
+    
+    if mode == "gui":
+        print("Starting GUI mode...")
+        print()
+        script = GUI_SCRIPT
+    else:
+        print("🚀 Launching console mode...")
+        print()
+        script = CONSOLE_SCRIPT
+    
+    try:
+        subprocess.run([python, str(script)], cwd=str(INSTALL_DIR))
+    except KeyboardInterrupt:
+        print("\n\n Java-the-hud shutting down...")
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
