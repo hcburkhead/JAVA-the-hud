@@ -8,7 +8,7 @@
 
 A personal AI assistant to help you automate tasks by speaking to it. Features a GUI with real-time waveforms to visualize voice activity and responses. This acts as a wrapper for whatever LLM you want - just needs an API key.
 
-Named "Java-the-hud" to avoid conflicts with Java programming language installations on user systems.
+Named "Java-the-hud" to avoid conflicts with Java programming language installations on user systems...and because it's obvious, right?
 
 ## Setup
 
