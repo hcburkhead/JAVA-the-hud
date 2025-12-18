@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 java-activate - Launch Java-the-hud voice assistant
+Designed by Clay Burkhead
 """
 
 import os
@@ -41,7 +42,7 @@ def main():
     check_venv()
     
     if not GUI_SCRIPT.exists():
-        print(f"❌ GUI script not found: {GUI_SCRIPT}")
+        print(f"GUI script not found: {GUI_SCRIPT}")
         sys.exit(1)
     
     # Parse arguments
@@ -70,7 +71,7 @@ def main():
         print()
         script = GUI_SCRIPT
     else:
-        print("🚀 Launching console mode...")
+        print("Starting console mode...")
         print()
         script = CONSOLE_SCRIPT
     
@@ -79,7 +80,7 @@ def main():
     except KeyboardInterrupt:
         print("\n\n Java-the-hud shutting down...")
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\n Error: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":
