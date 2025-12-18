@@ -9,7 +9,7 @@ import tkinter as tk
 from tkinter import scrolledtext, ttk, messagebox
 import threading
 from datetime import datetime
-from java_the_hud_main import (
+from java-the-hud_main import (
     JAVAAssistant, OpenAIProvider, AnthropicProvider, 
     GeminiProvider, OllamaProvider
 )
