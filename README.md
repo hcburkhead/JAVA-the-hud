@@ -5,7 +5,6 @@
 <img width="722" height="372" alt="ascii-art (1)" src="https://github.com/user-attachments/assets/c2fb86c0-afbc-4dbd-a690-cc8b7b6c4f99" />
 
 
-# Java-the-hud - Voice Assistant
 
 A personal AI assistant to help you automate tasks by speaking to it. Features a GUI with real-time waveforms to visualize voice activity and responses. This acts as a wrapper for whatever LLM you want - just needs an API key.
 
